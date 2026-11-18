@@ -1,0 +1,127 @@
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden;background:#0a0d0a}
+body{font-family:"Segoe UI",Roboto,system-ui,sans-serif;color:#e8f0e4;-webkit-font-smoothing:antialiased;cursor:default}
+canvas{display:block}
+.hidden{display:none!important}
+
+/* ---------- overlays ---------- */
+.overlay{position:fixed;inset:0;z-index:40;display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(ellipse at 50% 40%,rgba(30,48,32,.55),rgba(4,7,5,.94) 70%),#050705}
+.panel{position:relative;width:min(680px,92vw);padding:42px 44px 34px;text-align:center;
+  background:linear-gradient(160deg,rgba(22,32,24,.92),rgba(10,14,11,.96));
+  border:1px solid rgba(140,190,130,.18);border-radius:4px;
+  box-shadow:0 30px 80px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.05)}
+.panel:before{content:"";position:absolute;inset:6px;border:1px solid rgba(140,190,130,.08);pointer-events:none}
+.panel.small{width:min(430px,90vw);padding:38px 36px 30px}
+
+h1{font-size:clamp(34px,6vw,58px);font-weight:800;letter-spacing:.1em;line-height:.98;color:#dfeed6}
+h1 span{display:block;font-weight:300;letter-spacing:.34em;color:#7fae6d;font-size:.52em;margin-top:8px}
+h2{font-size:30px;letter-spacing:.22em;font-weight:700;margin-bottom:22px}
+h2.dead{color:#d8593f;text-shadow:0 0 26px rgba(216,89,63,.45)}
+.tag{margin:20px 0 26px;color:#8fa189;font-size:14px;letter-spacing:.06em;font-style:italic}
+
+.ctrls{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:30px;
+  padding:18px 10px;border-top:1px solid rgba(140,190,130,.12);border-bottom:1px solid rgba(140,190,130,.12)}
+.col{display:flex;flex-direction:column;gap:9px;min-width:150px}
+.row{display:flex;align-items:center;gap:5px;font-size:12px}
+.row em{margin-left:6px;color:#8b9b85;font-style:normal;letter-spacing:.08em;text-transform:uppercase;font-size:10.5px}
+kbd{display:inline-flex;align-items:center;justify-content:center;min-width:24px;height:24px;padding:0 6px;
+  font:600 11px/1 "Segoe UI",sans-serif;color:#cfe0c6;background:#1c261d;
+  border:1px solid rgba(150,200,140,.22);border-bottom-width:2px;border-radius:3px}
+
+button{margin-top:4px;padding:15px 40px;font:700 14px/1 "Segoe UI",sans-serif;letter-spacing:.2em;
+  color:#0c140c;background:linear-gradient(#a8d494,#6f9f5c);border:0;border-radius:3px;cursor:pointer;
+  box-shadow:0 6px 0 #3f5c34,0 12px 26px rgba(0,0,0,.5);transition:transform .09s,box-shadow .09s,filter .15s}
+button:hover{filter:brightness(1.08)}
+button:active{transform:translateY(4px);box-shadow:0 2px 0 #3f5c34,0 6px 14px rgba(0,0,0,.5)}
+.fine{margin-top:20px;font-size:11px;letter-spacing:.14em;color:#6c7a67;text-transform:uppercase}
+.fine kbd{min-width:20px;height:20px;font-size:10px}
+
+.err{margin-top:14px;font-size:12px;line-height:1.5;color:#e88a6a;letter-spacing:.04em}
+.results{display:flex;justify-content:center;gap:26px;margin-bottom:26px}
+.results div{display:flex;flex-direction:column;gap:6px;min-width:74px}
+.results span{font-size:10px;letter-spacing:.18em;color:#78876f}
+.results b{font-size:26px;color:#cfe6c2;font-weight:700}
+
+/* ---------- crosshair ---------- */
+#crosshair{position:fixed;left:50%;top:50%;width:26px;height:26px;transform:translate(-50%,-50%);
+  z-index:20;pointer-events:none;transition:transform .08s}
+#crosshair.wide{transform:translate(-50%,-50%) scale(1.55)}
+.ch{position:absolute;background:rgba(226,240,220,.82);box-shadow:0 0 3px rgba(0,0,0,.9)}
+.ch.v{left:50%;top:0;width:1.5px;height:26px;margin-left:-.75px}
+.ch.h{top:50%;left:0;height:1.5px;width:26px;margin-top:-.75px}
+#crosshair .dot{position:absolute;left:50%;top:50%;width:3px;height:3px;margin:-1.5px 0 0 -1.5px;
+  border-radius:50%;background:#8ede6d}
+.ch.v{clip-path:polygon(0 0,100% 0,100% 32%,0 32%,0 68%,100% 68%,100% 100%,0 100%)}
+.ch.h{clip-path:polygon(0 0,32% 0,32% 100%,0 100%,68% 100%,68% 0,100% 0,100% 100%)}
+
+/* ---------- hud ---------- */
+#hud{position:fixed;inset:0;z-index:15;pointer-events:none;
+  text-shadow:0 2px 6px rgba(0,0,0,.85);user-select:none}
+#hud:after{content:"";position:absolute;inset:0;pointer-events:none;
+  box-shadow:inset 0 0 190px rgba(0,0,0,.72)}
+
+.hud-left{position:absolute;left:30px;bottom:28px;width:230px}
+.bar-wrap{position:relative}
+.bar-label{font-size:9px;letter-spacing:.24em;color:#93a68c;margin-bottom:5px}
+.bar{height:12px;background:rgba(8,12,9,.72);border:1px solid rgba(160,200,150,.25);
+  border-radius:2px;overflow:hidden}
+.fill{height:100%;width:100%;background:linear-gradient(90deg,#7fc463,#b9e39c);
+  box-shadow:0 0 12px rgba(140,220,110,.4);transition:width .18s}
+.fill.low{background:linear-gradient(90deg,#c04a2c,#e5773f);box-shadow:0 0 14px rgba(224,90,50,.55)}
+.bar-num{position:absolute;right:0;top:-2px;font:700 13px/1 "Segoe UI";color:#d6e8cc}
+.stamina-wrap{margin-top:7px}
+.sbar{height:4px;background:rgba(8,12,9,.6);border-radius:2px;overflow:hidden}
+.sfill{height:100%;width:100%;background:linear-gradient(90deg,#5f9fd0,#a8d4ee);transition:width .12s}
+
+.hud-right{position:absolute;right:30px;bottom:26px;text-align:right}
+#weaponName{font-size:15px;letter-spacing:.24em;color:#b9cfae;font-weight:600}
+#ammo{font:800 42px/1 "Segoe UI";color:#e6f2de;margin-top:2px}
+#ammo .slash{margin:0 3px;font-weight:300;color:#6f7f69;font-size:26px}
+#ammoRes{font-size:20px;color:#8f9f88;font-weight:600}
+#ammoMag.empty{color:#e0603c}
+#reloadHint{font-size:11px;letter-spacing:.24em;color:#e0a83c;margin-top:2px;animation:blink .8s infinite}
+@keyframes blink{50%{opacity:.28}}
+.slots{display:flex;gap:6px;justify-content:flex-end;margin-top:12px}
+.slot{padding:5px 10px;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:#77866f;
+  background:rgba(10,15,11,.62);border:1px solid rgba(150,200,140,.13);border-radius:2px;transition:.15s}
+.slot b{color:#9fb096;margin-right:5px}
+.slot.active{color:#0e150e;background:linear-gradient(#a8d494,#7fae6b);border-color:#a8d494}
+.slot.active b{color:#0e150e}
+
+.hud-top{position:absolute;top:22px;left:50%;transform:translateX(-50%);display:flex;gap:34px}
+.stat{display:flex;flex-direction:column;align-items:center;gap:3px}
+.stat .k{font-size:8.5px;letter-spacing:.24em;color:#7e8f78}
+.stat .v{font:700 21px/1 "Segoe UI";color:#dcecd2}
+
+#waveBanner{position:absolute;top:34%;left:50%;transform:translateX(-50%);text-align:center;
+  font-size:clamp(26px,5vw,46px);font-weight:800;letter-spacing:.2em;color:#e6f2de;
+  animation:wavePop 2.4s ease-out forwards}
+@keyframes wavePop{0%{opacity:0;transform:translateX(-50%) scale(.86)}
+  14%{opacity:1;transform:translateX(-50%) scale(1)}72%{opacity:1}100%{opacity:0}}
+
+#damageFlash{position:absolute;inset:0;opacity:0;pointer-events:none;
+  background:radial-gradient(ellipse at center,transparent 32%,rgba(150,18,10,.62) 100%);
+  transition:opacity .34s}
+#damageFlash.on{opacity:1;transition:opacity .04s}
+
+#hitmarker{position:absolute;left:50%;top:50%;width:22px;height:22px;transform:translate(-50%,-50%) rotate(45deg);
+  opacity:0;transition:opacity .12s}
+#hitmarker.on{opacity:1;transition:none}
+#hitmarker:before,#hitmarker:after{content:"";position:absolute;background:#fff;box-shadow:0 0 4px #000}
+#hitmarker:before{left:50%;top:0;width:2px;height:100%;margin-left:-1px}
+#hitmarker:after{top:50%;left:0;height:2px;width:100%;margin-top:-1px}
+#hitmarker.kill:before,#hitmarker.kill:after{background:#ff6a44}
+
+#killFeed{position:absolute;right:30px;top:88px;display:flex;flex-direction:column;
+  align-items:flex-end;gap:5px}
+#killFeed div{font-size:11px;letter-spacing:.12em;color:#cfe0c4;padding:4px 10px;
+  background:rgba(10,16,11,.6);border-left:2px solid #8ede6d;animation:feed 2.6s forwards}
+@keyframes feed{0%{opacity:0;transform:translateX(16px)}10%,72%{opacity:1;transform:none}100%{opacity:0}}
+
+@media(max-width:640px){
+  .hud-left{left:16px;bottom:18px;width:170px}
+  .hud-right{right:16px;bottom:16px}
+  #ammo{font-size:32px}
+  .hud-top{gap:20px}
+}

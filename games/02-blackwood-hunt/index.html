@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Blackwood Hunt — Forest FPS</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="app"></div>
+
+<div id="crosshair" class="hidden">
+  <span class="ch v"></span><span class="ch h"></span>
+  <span class="dot"></span>
+</div>
+
+<div id="hud" class="hidden">
+  <div class="hud-left">
+    <div class="bar-wrap">
+      <div class="bar-label">HEALTH</div>
+      <div class="bar"><div id="hpFill" class="fill"></div></div>
+      <div id="hpText" class="bar-num">100</div>
+    </div>
+    <div class="stamina-wrap">
+      <div class="sbar"><div id="stFill" class="sfill"></div></div>
+    </div>
+  </div>
+
+  <div class="hud-right">
+    <div id="weaponName">PISTOL</div>
+    <div id="ammo"><span id="ammoMag">12</span><span class="slash">/</span><span id="ammoRes">48</span></div>
+    <div id="reloadHint" class="hidden">RELOADING…</div>
+    <div class="slots">
+      <div class="slot active" data-slot="1"><b>1</b> Pistol</div>
+      <div class="slot" data-slot="2"><b>2</b> Shotgun</div>
+      <div class="slot" data-slot="3"><b>3</b> Rifle</div>
+    </div>
+  </div>
+
+  <div class="hud-top">
+    <div class="stat"><span class="k">SCORE</span><span id="score" class="v">0</span></div>
+    <div class="stat"><span class="k">WAVE</span><span id="wave" class="v">1</span></div>
+    <div class="stat"><span class="k">LEFT</span><span id="left" class="v">0</span></div>
+  </div>
+
+  <div id="waveBanner" class="hidden"></div>
+  <div id="damageFlash"></div>
+  <div id="hitmarker"></div>
+  <div id="killFeed"></div>
+</div>
+
+<div id="start" class="overlay">
+  <div class="panel">
+    <h1>BLACKWOOD<span>HUNT</span></h1>
+    <p class="tag">Survive the forest. Something is already awake.</p>
+    <div class="ctrls">
+      <div class="col">
+        <div class="row"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd><em>Move</em></div>
+        <div class="row"><kbd>Shift</kbd><em>Sprint</em></div>
+        <div class="row"><kbd>Space</kbd><em>Jump</em></div>
+      </div>
+      <div class="col">
+        <div class="row"><kbd>Mouse</kbd><em>Look</em></div>
+        <div class="row"><kbd>LMB</kbd><em>Fire</em></div>
+        <div class="row"><kbd>R</kbd><em>Reload</em></div>
+      </div>
+      <div class="col">
+        <div class="row"><kbd>1</kbd><em>Pistol</em></div>
+        <div class="row"><kbd>2</kbd><em>Shotgun</em></div>
+        <div class="row"><kbd>3</kbd><em>Rifle</em></div>
+      </div>
+    </div>
+    <button id="playBtn">ENTER THE FOREST</button>
+    <p class="fine">Click to lock the mouse · <kbd>Esc</kbd> to pause</p>
+    <p id="bootErr" class="err hidden"></p>
+  </div>
+</div>
+
+<div id="pause" class="overlay hidden">
+  <div class="panel small">
+    <h2>PAUSED</h2>
+    <button id="resumeBtn">RESUME</button>
+    <p class="fine">Click anywhere to resume</p>
+  </div>
+</div>
+
+<div id="over" class="overlay hidden">
+  <div class="panel small">
+    <h2 class="dead">YOU DIED</h2>
+    <div class="results">
+      <div><span>SCORE</span><b id="finalScore">0</b></div>
+      <div><span>WAVE</span><b id="finalWave">1</b></div>
+      <div><span>KILLS</span><b id="finalKills">0</b></div>
+    </div>
+    <button id="restartBtn">TRY AGAIN</button>
+  </div>
+</div>
+
+<script type="importmap">
+{ "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js" } }
+</script>
+<script>
+function bootFail(msg){
+  var e=document.getElementById('bootErr');
+  if(e){e.textContent=msg;e.classList.remove('hidden');}
+}
+addEventListener('error',function(ev){
+  if(!window.__gameReady) bootFail('Load failed: '+(ev.message||'script error')+' — check the internet connection to unpkg.com.');
+});
+setTimeout(function(){
+  if(!window.__gameReady) bootFail('Three.js could not be loaded from the CDN. Check your connection, then reload.');
+},9000);
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { PointerLockControls } from 'https://unpkg.com/three@0.160.0/examples/jsm/controls/PointerLockControls.js';
+window.THREE = THREE;
+window.PointerLockControls = PointerLockControls;
+var s = document.createElement('script');
+s.src = 'game.js';
+s.onerror = function(){ bootFail('game.js could not be loaded.'); };
+document.body.appendChild(s);
+</script>
+</body>
+</html>

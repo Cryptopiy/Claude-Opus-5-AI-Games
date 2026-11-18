@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Solar System 3D</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<canvas id="scene"></canvas>
+
+<div id="loader">Loading…</div>
+
+<header id="topbar">
+  <div class="brand">SOLAR&nbsp;SYSTEM<span>3D</span></div>
+  <div id="planetRow" class="planet-row"></div>
+</header>
+
+<section id="infoPanel" class="hidden">
+  <button id="infoClose" aria-label="Close">&times;</button>
+  <div id="infoSwatch" class="swatch"></div>
+  <h2 id="infoName">Sun</h2>
+  <ul id="infoFacts"></ul>
+</section>
+
+<footer id="controls">
+  <button id="btnPause" class="ctrl">Pause</button>
+  <label class="speed">
+    <span>Speed</span>
+    <input id="speed" type="range" min="0" max="4" step="0.05" value="1">
+    <b id="speedVal">1.00×</b>
+  </label>
+  <button id="btnReset" class="ctrl">Reset View</button>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.137.5/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.137.5/examples/js/controls/OrbitControls.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
